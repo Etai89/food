@@ -20,6 +20,17 @@ h1{
     margin-bottom: 15px;
 
 }
+#language{
+    background-color: transparent;
+    border-radius: 10px;
+    width: 80px;
+    height: 30px;
+    box-shadow: 1px 1px 4px black;
+}
+.option{
+    background-color: bisque;
+
+}
 #btn, #savePage{
     margin: 15px;
     width: 100px;
