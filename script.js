@@ -2,6 +2,16 @@ $(document).ready(() => {
     const TOKEN = 'AIzaSyB4Hka0BMKYNd5tiMCJo5G3qB13oDO40d8';
     let deferredPrompt; // Declare deferredPrompt here
 
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+            console.log('Service Worker registered with scope:', registration.scope);
+        }).catch((error) => {
+            console.error('Service Worker registration failed:', error);
+        });
+    }
+
+    // Check for app install prompt on page load
     checkForAppInstall();
 
     // Listen for the beforeinstallprompt event
@@ -17,28 +27,29 @@ $(document).ready(() => {
     }
 
     function checkForAppInstall() {
-        if (isMobileDevice()) {
-            if (deferredPrompt) {
-                // Show the install prompt
-                deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        alert('Thanks for installing the app!');
-                    } else {
-                        alert('App installation declined.');
-                    }
-                    // Clear the deferredPrompt variable, since it can only be used once
-                    deferredPrompt = null;
-                });
-            } else {
-                // Alert only if the app is not already installed
-                alert('To add this page to your home screen, tap the share icon and select "Add to Home Screen".');
-            }
+        if (isMobileDevice() && !deferredPrompt) {
+            alert('To add this page to your home screen, tap the share icon and select "Add to Home Screen".');
         }
     }
 
     $('#btn').click(() => {
+        // Ensure the app install prompt is shown after the button is clicked
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    alert('Thanks for installing the app!');
+                } else {
+                    alert('App installation declined.');
+                }
+                // Clear the deferredPrompt variable
+                deferredPrompt = null;
+            });
+        } else {
+            checkForAppInstall(); // Check if the app is not installed and prompt
+        }
+
+        // Existing click handler functionality for generating content
         $('#pop').html('');
         let ingredients = $('#ingredients').val();  // Get the ingredients
         let language = $('#language').val();
