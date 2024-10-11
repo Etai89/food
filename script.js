@@ -2,9 +2,12 @@ $(document).ready(() => {
 
     const TOKEN = 'AIzaSyB4Hka0BMKYNd5tiMCJo5G3qB13oDO40d8';
 
-    $('#btn').click(() => {
-        let ingredients = $('#ingredients').val();  // Move inside click event
 
+
+    $('#btn').click(() => {
+        $('#pop').html('')
+        let ingredients = $('#ingredients').val();  // Move inside click event
+        let language = $('#language').val()
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${TOKEN}`;
 
         const requestData = {
@@ -13,17 +16,25 @@ $(document).ready(() => {
                     parts: [
                         {
                             text: `Find a recipe that includes some of the ingredients from the list ${ingredients}.
-                                The recipe should be in Hebrew, and it's okay if not all ingredients are used.
-                                Return the response as HTML, but omit the <html>, <body>, and other similar tags
-                                beside <ul> and <li> for the ingredients and the orders. Add an attribute lng to the <h2> title tag 
-                                with the title of the recipe in English while keeping the content of the tag in Hebrew,
-                                make sure there is ONLY ONE <h2> title in hebrew but the attribute in english, dont use span or a tags or more than 1 <h2>.
+                                make sure the recipe is KOSHER
+                                The recipe should be in ${language}, and it's okay if not all ingredients are used.
+                                Return the response as HTML, but omit the <html>, <body>, and other similar tags.
+                                for the ingredients and the orders. Add an attribute lng to the <h2> title tag 
+                                with the title of the recipe in English while keeping the content of the tag in ${language},
+                                make sure there is ONLY ONE <h2> title in ${language} but the attribute in english, dont use span or a tags or more than 1 <h2>.
+                                after each process add <br>
                                 `
                         }
                     ]
                 }
             ]
         };
+        const languages = ['English', 'Espaniol', 'French'];
+        if (languages.includes($('#language').val())) {
+            $('html').attr('dir', 'ltr');
+        } else {
+            $('html').attr('dir', 'rtl');
+        }
 
         $.ajax({
             url: apiEndpoint,
@@ -52,11 +63,12 @@ $(document).ready(() => {
     }
 
     const getImage = (keywords) => {
+        $('#myImage').html('')
         const PEXELS_TOKEN = 'wB0Z7SEwhT7JqHGjiMRH7YXtRzLjLH3oGZK7XxKdHoddPPa3F7Z6O7y9';
         let page = 1;
-    
+
         console.log("Keywords for Pexels search:", keywords); // Log the keywords
-    
+
         $.ajax({
             url: 'https://api.pexels.com/v1/search',
             type: 'GET',
@@ -70,8 +82,9 @@ $(document).ready(() => {
             },
             success: function (response) {
                 if (response.photos && response.photos.length > 0) {
-                    const photoUrl = response.photos[0].src.small;
-                    $('#myImage').append(`<img src="${photoUrl}" alt="Recipe Image"/>`);
+                    const photoUrl = response.photos[0].src.landscape;
+                    console.log({ response })
+                    $('#myImage').append(`<img id="imgFood" src="${photoUrl}" alt="Recipe Image"/>`);
                 } else {
                     console.log("No images found for the given keywords.");
                 }
@@ -81,6 +94,17 @@ $(document).ready(() => {
             }
         });
     }
-    
+
 
 });
+
+
+
+// landscape
+// large
+// large2x
+// medium
+// original
+// portrait
+// small
+// tiny
