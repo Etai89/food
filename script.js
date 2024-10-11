@@ -2,7 +2,17 @@ $(document).ready(() => {
 
     const TOKEN = 'AIzaSyB4Hka0BMKYNd5tiMCJo5G3qB13oDO40d8';
 
+    $('#savePage').on('click', function() {
+        if (isMobileDevice()) {
+            alert('To add this page to your home screen, tap the share icon and select "Add to Home Screen".');
+        } else {
+            alert('This functionality is for mobile devices only.');
+        }
+    });
 
+    function isMobileDevice() {
+        return /Mobi|Android/i.test(navigator.userAgent);
+    }
 
     $('#btn').click(() => {
         $('#pop').html('')
@@ -96,17 +106,7 @@ $(document).ready(() => {
     }
 
 
-    $('#savePage').on('click', function () {
-        if (isMobileDevice()) {
-            alert('To add this page to your home screen, tap the share icon and select "Add to Home Screen".');
-        } else {
-            alert('This functionality is for mobile devices only.');
-        }
-    });
-
-    function isMobileDevice() {
-        return /Mobi|Android/i.test(navigator.userAgent);
-    }
+    
 
 });
 
