@@ -46,6 +46,7 @@ $(document).ready(() => {
                 $('#pop').html(generatedContent);
 
                 const keywords = getRecipeName(); // Store the result from getRecipeName
+                $('#ingredients').val('')
                 getImage(keywords); // Pass keywords to getImage
             },
             error: function (error) {
